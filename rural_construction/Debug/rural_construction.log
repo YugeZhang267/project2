@@ -1,0 +1,4 @@
+﻿  TestAdjMatrixUndirGraph.cpp
+D:\数据结构\数据结构2\项目\项目二\rural_construction\TestAdjMatrixUndirGraph.cpp(22,7): warning C4101: “v”: 未引用的局部变量
+D:\数据结构\数据结构2\项目\项目二\rural_construction\TestAdjMatrixUndirGraph.cpp(21,17): warning C4101: “e”: 未引用的局部变量
+  rural_construction.vcxproj -> D:\数据结构\数据结构2\项目\项目二\rural_construction\Debug\rural_construction.exe
