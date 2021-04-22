@@ -55,14 +55,14 @@ KruskalEdge<ElemType, WeightType> &KruskalEdge<ElemType, WeightType>::operator =
 }
 
 
-template <class ElemType, class WeightType>
-void MiniSpanTreeKruskal(const AdjMatrixUndirGraph<ElemType> &g)
+template <class ElemType>
+void MiniSpanTreeKruskal(AdjMatrixUndirGraph<ElemType> &g)
 // 初始条件：存在网g
 // 操作结果：用Kruskal算法构造网g的最小代价生成树
 {
 	int count, VexNum = g.GetVexNum();
-    KruskalEdge<ElemType, WeightType> KEdge;
- 	MinHeap<KruskalEdge<ElemType, WeightType> > ha(g.GetEdgeNum());
+    KruskalEdge<ElemType, char> KEdge;
+ 	MinHeap<KruskalEdge<ElemType, char> > ha(g.GetEdgeNum());
     ElemType  *kVex, v1, v2;
 	kVex = new ElemType[VexNum];	// 定义顶点数组,存储顶点信息 
 	for (int i = 0; i < VexNum; i++)

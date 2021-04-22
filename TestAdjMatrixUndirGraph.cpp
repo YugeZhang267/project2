@@ -1,7 +1,7 @@
 #include "AdjMatrixUndirGraph.h"		// ÁÚ½Ó¾ØÕóÎŞÏòÍ¼
 #include <iostream>
 #include <fstream>
-//#include "Kruskal.h"
+#include "Kruskal.h"
 
 using namespace std;
 int main(void)
@@ -43,7 +43,7 @@ int main(void)
 		    cin >> c;
 		    switch (c) 		{
 			    case '1':
-					g.All_mintree();
+					MiniSpanTreeKruskal(g);
 				    break;
 			    case '2':
 				    break;
