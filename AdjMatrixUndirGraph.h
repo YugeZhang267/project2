@@ -1,6 +1,9 @@
 #ifndef __ADJ_MATRIX_UNDIR_GRAPH_H__
 #define __ADJ_MATRIX_UNDIR_GRAPH_H__
 #include "Assistance.h"					// 辅助软件包
+#include "MineHeap.h"
+#include "UFSets.h"
+//#include "Kruskal.h"
 
 // 无向图的邻接矩阵类
 template <class ElemType>
@@ -26,7 +29,9 @@ public:
 	Status GetElem(int v, ElemType &d) const;// 求顶点的元素值
 	Status SetElem(int v, const ElemType &d);// 设置顶点的元素值
 	int GetVexNum() const;					// 返回顶点个数
+	int GetWeight(int v1, int v2);
 	int GetArcNum() const;					// 返回边数
+	int GetEdgeNum();
 	int FirstAdjVex(int v) const;		// 返回顶点v的第一个邻接点
 	int NextAdjVex(int v1, int v2) const;		 // 返回顶点v1的相对于v2的下一个邻接点
 	void InsertVex(const ElemType &d);			 // 插入元素值为d的顶点
@@ -39,8 +44,58 @@ public:
 	AdjMatrixUndirGraph<ElemType> &operator =(const AdjMatrixUndirGraph<ElemType> &g);
 		// 赋值语句重载
   void Display();	                         // 显示邻接矩阵无向图
+//  void All_mintree();
+
+
 };
 
+template <class ElemType>
+int AdjMatrixUndirGraph<ElemType>::GetWeight(int v1, int v2)
+{
+	return arcs[v1][v2];
+}
+
+template <class ElemType>
+int AdjMatrixUndirGraph<ElemType>::GetEdgeNum()
+{
+	return arcNum;
+}
+/*
+template <class ElemType>
+void AdjMatrixUndirGraph<ElemType>::All_mintree()
+{
+	int count, VexNum = GetVexNum();
+	KruskalEdge<ElemType, char> KEdge;
+	MinHeap<KruskalEdge<ElemType, char> > ha(g.GetEdgeNum());
+	ElemType* kVex, v1, v2;
+	kVex = new ElemType[VexNum];	// 定义顶点数组,存储顶点信息 
+	for (int i = 0; i < VexNum; i++)
+		g.GetElem(i, kVex[i]);
+	UFSets<ElemType> f(kVex, VexNum);// 根据顶点数组构造并查集 
+	for (int v = 0; v < g.GetVexNum(); v++)
+		for (int u = g.FirstAdjVex(v); u >= 0; u = g.NextAdjVex(v, u))
+			if (v < u) {	// 将v < u的边插入到最小堆 
+				g.GetElem(v, v1);
+				g.GetElem(u, v2);
+				KEdge.vertex1 = v1;
+				KEdge.vertex2 = v2;
+				KEdge.weight = g.GetWeight(v, u);
+				ha.Insert(KEdge);
+			}
+	count = 0;					    // 表示已经挑选的边数
+
+	while (count < VexNum - 1) {
+		ha.DeleteTop(KEdge);        // 从堆顶取一条边
+		v1 = KEdge.vertex1;
+		v2 = KEdge.vertex2;
+		if (f.Differ(v1, v2)) {	// 边所依附的两顶点不在同一棵树上
+			cout << "边:( " << v1 << ", " << v2 << " ) 权:" << KEdge.weight << endl; // 输出边及权值
+			f.Union(v1, v2);		// 将两个顶点所在的树合并成一棵树
+			count++;
+		}
+	}
+}
+*/
 // 无向图的邻接矩阵类的实现部分
 template <class ElemType>
 AdjMatrixUndirGraph<ElemType>::AdjMatrixUndirGraph(ElemType es[], int vertexNum, int vertexMaxNum)
