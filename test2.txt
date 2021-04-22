@@ -1,0 +1,15 @@
+5
+A
+B
+C
+D
+E
+8
+A B 3
+A C 7
+A D 1
+A E 4
+B C 6
+B D 2
+C E 8
+D E 11
