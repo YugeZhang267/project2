@@ -21,6 +21,15 @@
     <ClInclude Include="..\Assistance.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\Kruskal.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MineHeap.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UFSets.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\TestAdjMatrixUndirGraph.cpp">

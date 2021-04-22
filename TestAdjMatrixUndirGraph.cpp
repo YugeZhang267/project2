@@ -1,13 +1,15 @@
 #include "AdjMatrixUndirGraph.h"		// 邻接矩阵无向图
 #include <iostream>
 #include <fstream>
+//#include "Kruskal.h"
+
 using namespace std;
 int main(void)
 {
     try									// 用try封装可能出现异常的代码
 	{
 		int N,M;
-		ifstream file("D://test1.txt",ios::in);
+		ifstream file("test1.txt",ios::in);
 		if(!file)
         {
             cout<<"打开文件失败";
@@ -41,6 +43,7 @@ int main(void)
 		    cin >> c;
 		    switch (c) 		{
 			    case '1':
+					g.All_mintree();
 				    break;
 			    case '2':
 				    break;

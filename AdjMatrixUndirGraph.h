@@ -1,6 +1,8 @@
 #ifndef __ADJ_MATRIX_UNDIR_GRAPH_H__
 #define __ADJ_MATRIX_UNDIR_GRAPH_H__
 #include "Assistance.h"					// 辅助软件包
+#include "MineHeap.h"
+#include "UFSets.h"
 
 // 无向图的邻接矩阵类
 template <class ElemType>
@@ -26,7 +28,9 @@ public:
 	Status GetElem(int v, ElemType &d) const;// 求顶点的元素值
 	Status SetElem(int v, const ElemType &d);// 设置顶点的元素值
 	int GetVexNum() const;					// 返回顶点个数
+	int GetWeight(int v1, int v2);
 	int GetArcNum() const;					// 返回边数
+	int GetEdgeNum();
 	int FirstAdjVex(int v) const;		// 返回顶点v的第一个邻接点
 	int NextAdjVex(int v1, int v2) const;		 // 返回顶点v1的相对于v2的下一个邻接点
 	void InsertVex(const ElemType &d);			 // 插入元素值为d的顶点
@@ -39,7 +43,70 @@ public:
 	AdjMatrixUndirGraph<ElemType> &operator =(const AdjMatrixUndirGraph<ElemType> &g);
 		// 赋值语句重载
   void Display();	                         // 显示邻接矩阵无向图
+  void All_mintree();
+
+
 };
+
+template <class ElemType>
+int AdjMatrixUndirGraph<ElemType>::GetWeight(int v1, int v2)
+{
+	return arcs[v1][v2];
+}
+
+template <class ElemType>
+int AdjMatrixUndirGraph<ElemType>::GetEdgeNum()
+{
+	return arcNum;
+}
+
+template <class ElemType>
+void AdjMatrixUndirGraph<ElemType>::All_mintree()
+{
+	int v_1, v_2;
+	int count;// int VexNum = vexNum;
+	MinHeap<int> ha(arcNum);
+	MinHeap<ElemType> h1(arcNum);
+	MinHeap<ElemType> h2(arcNum);
+	ElemType* kVex, v1, v2;
+	kVex = new ElemType[vexNum];
+	for (int i=0;i<vexNum;i++){
+		GetElem(i, kVex[i]);
+	}
+	UFSets<ElemType> f(kVex, vexNum);
+	ElemType vertex1, vertex2; int weight_;
+	for (int v = 0; v < vexNum; v++)
+		for (int u = FirstAdjVex(v); u >= 0; u = NextAdjVex(v, u))
+			if (v < u) {	// 将v < u的边插入到最小堆 
+				GetElem(v, v1);
+				GetElem(u, v2);
+				vertex1 = v1;
+				vertex2 = v2;
+				weight_= GetWeight(v, u);
+
+				ha.Insert(weight_);
+				h1.Insert(vertex1);
+				h2.Insert(vertex2);//替代KEdge
+			}
+	count = 0;
+	while (count < vexNum - 1) {
+		ha.DeleteTop(weight_);
+		h1.DeleteTop(vertex1);
+		h2.DeleteTop(vertex2);
+
+		v_1 = GetOrder(vertex1);
+		v_2 = GetOrder(vertex2);
+
+		weight_ = GetWeight(v_1, v_2);
+		if (f.Differ(vertex1, vertex2)) {
+			cout << "边:( " << vertex1 << ", " << vertex2 << " ) 权:" 
+				<< weight_ << endl; // 输出边及权值
+			f.Union(vertex1, vertex2);		// 将两个顶点所在的树合并成一棵树
+			count++;
+		}
+
+	}
+}
 
 // 无向图的邻接矩阵类的实现部分
 template <class ElemType>
