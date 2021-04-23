@@ -7,7 +7,7 @@ int main(void)
     try									// 用try封装可能出现异常的代码
 	{
 		int N,M;
-		ifstream file("D://test1.txt",ios::in);
+		ifstream file("C://test1.txt",ios::in);
 		if(!file)
         {
             cout<<"打开文件失败";
@@ -40,15 +40,16 @@ int main(void)
 		    cout << endl << "选择功能(0~4):";
 		    cin >> c;
 		    switch (c) 		{
-			    case '1':
+			    /*case '1':
 				    break;
 			    case '2':
-				    break;
+				    break;*/
 			    case '3':
 			        cout << endl << "输入查询乡村A和B";
 			        cin>> e1 >> e2;
 			        v1 = g.GetOrder(e1);
 			        v2 = g.GetOrder(e2);
+					g.DisplayShortAB(v1, v2);
 			        break;
        	      }
          }

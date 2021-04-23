@@ -1,0 +1,4 @@
+﻿  TestAdjMatrixUndirGraph.cpp
+C:\Users\刘斐然\Documents\GitHub\project2\TestAdjMatrixUndirGraph.cpp(22,7): warning C4101: “v”: 未引用的局部变量
+C:\Users\刘斐然\Documents\GitHub\project2\TestAdjMatrixUndirGraph.cpp(21,17): warning C4101: “e”: 未引用的局部变量
+  rural_construction.vcxproj -> C:\Users\刘斐然\Documents\GitHub\project2\x64\Debug\rural_construction.exe

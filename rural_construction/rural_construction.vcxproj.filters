@@ -21,6 +21,12 @@
     <ClInclude Include="..\Assistance.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\LinkStack.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Node.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\TestAdjMatrixUndirGraph.cpp">

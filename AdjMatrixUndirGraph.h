@@ -1,8 +1,9 @@
 #ifndef __ADJ_MATRIX_UNDIR_GRAPH_H__
 #define __ADJ_MATRIX_UNDIR_GRAPH_H__
 #include "Assistance.h"					// 辅助软件包
+#include "LinkStack.h"
 
-// 无向图的邻接矩阵类
+// 有向图的邻接矩阵类
 template <class ElemType>
 class AdjMatrixUndirGraph
 {
@@ -12,12 +13,13 @@ protected:
 	int **arcs;							    // 存放边信息邻接矩阵
 	ElemType *vertexes;						// 存放顶点信息的数组
 	mutable Status *tag;					// 标志数组
+	int Infinity;                            //无穷大量
 
 public:
 // 邻接矩阵类型的方法声明:
-	AdjMatrixUndirGraph(ElemType es[], int vertexNum, int vertexMaxNum = DEFAULT_SIZE);
+	AdjMatrixUndirGraph(ElemType es[], int vertexNum, int vertexMaxNum = DEFAULT_SIZE,int infin=DEFAULT_INFINITY);
 		// 以数组es[]为顶点,顶点个数为vertexNum,允许的顶点最大数目为vertexMaxNum,边数为0的无向图
-	AdjMatrixUndirGraph(int vertexMaxNum = DEFAULT_SIZE);
+	AdjMatrixUndirGraph(int vertexMaxNum = DEFAULT_SIZE,int infin=DEFAULT_INFINITY);
 		// 构造允许的顶点最大数目为vertexMaxNum,边数为0的无向图
 	~AdjMatrixUndirGraph();					// 析构函数
 	void Clear();			              // 清空图
@@ -39,11 +41,13 @@ public:
 	AdjMatrixUndirGraph<ElemType> &operator =(const AdjMatrixUndirGraph<ElemType> &g);
 		// 赋值语句重载
   void Display();	                         // 显示邻接矩阵无向图
+  void DisplayShortAB(const int v1, const int v2);      //显示A村到B村的最短路径
+  void ShortestPathDij(int v0, int* path, int* dist);   //使用迪杰斯特拉算法找到从源点v0到其他各点的最短路径
 };
 
 // 无向图的邻接矩阵类的实现部分
 template <class ElemType>
-AdjMatrixUndirGraph<ElemType>::AdjMatrixUndirGraph(ElemType es[], int vertexNum, int vertexMaxNum)
+AdjMatrixUndirGraph<ElemType>::AdjMatrixUndirGraph(ElemType es[], int vertexNum, int vertexMaxNum,int infin)
 // 操作结果：构造数据元素为es[],顶点个数为vertexNum,允许的顶点最大数目为vertexMaxNum,边数为0的无向图
 
 {
@@ -56,6 +60,7 @@ AdjMatrixUndirGraph<ElemType>::AdjMatrixUndirGraph(ElemType es[], int vertexNum,
 	vexNum = vertexNum;
 	vexMaxNum = vertexMaxNum;
 	arcNum = 0;
+	Infinity = infin;
 
 	vertexes = new ElemType[vexMaxNum];      // 生成生成顶点信息数组
 	tag = new Status[vexMaxNum];			       // 生成标志数组
@@ -67,12 +72,12 @@ AdjMatrixUndirGraph<ElemType>::AdjMatrixUndirGraph(ElemType es[], int vertexNum,
 		vertexes[v] = es[v];
 		tag[v] = UNVISITED;
 		for (int u = 0; u < vexNum; u++)
-			arcs[v][u] = 0;
+			arcs[v][u] = Infinity;
 	}
 }
 
 template <class ElemType>
-AdjMatrixUndirGraph<ElemType>::AdjMatrixUndirGraph(int vertexMaxNum)
+AdjMatrixUndirGraph<ElemType>::AdjMatrixUndirGraph(int vertexMaxNum,int infin)
 // 操作结果：构造允许顶点的最大数目为vertexMaxNum的空无向图
 {
 	if (vertexMaxNum < 0)
@@ -81,6 +86,7 @@ AdjMatrixUndirGraph<ElemType>::AdjMatrixUndirGraph(int vertexMaxNum)
 	vexNum = 0;
 	vexMaxNum = vertexMaxNum;
 	arcNum = 0;
+	Infinity = infin;
 
 	vertexes = new ElemType[vexMaxNum];     // 生成生成顶点信息数组
 	tag = new Status[vexMaxNum];			      // 生成标志数组
@@ -174,7 +180,7 @@ int AdjMatrixUndirGraph<ElemType>::FirstAdjVex(int v) const
        throw Error("v不合法!");// 抛出异常
 
 	for (int u = 0; u < vexNum; u++)
-		if (arcs[v][u] != 0)
+		if (arcs[v][u] != 0&&arcs[v][u]!=Infinity)
        return u;
 
 	return -1;					// 返回-1表示无邻接点
@@ -192,7 +198,7 @@ int AdjMatrixUndirGraph<ElemType>::NextAdjVex(int v1, int v2) const
        Error("v1不能等于v2!");		// 抛出异常
 
 	for (int u = v2 + 1; u < vexNum; u++)
-		if (arcs[v1][u] != 0)
+		if (arcs[v1][u] != 0&&arcs[v1][u]!=Infinity)
        return u;
 
 	return -1;						// 返回-1表示无下一个邻接点
@@ -225,7 +231,7 @@ void AdjMatrixUndirGraph<ElemType>::InsertArc(int v1, int v2, int weight)
 	if (v1 == v2)
     throw Error("v1不能等于v2!");// 抛出异常
 
-	if (arcs[v1][v2] == 0)	{	  // 原无向图中没有边(v1, v2)
+	if (arcs[v1][v2] == Infinity)	{	  // 原无向图中没有边(v1, v2)
 	   arcNum++;
 	   arcs[v1][v2] = weight;
        arcs[v2][v1] = weight;
@@ -246,8 +252,8 @@ void AdjMatrixUndirGraph<ElemType>::DeleteVex(const ElemType &d)
    for (int u = 0; u < vexNum; u++)             // 删除与顶点d相关联的边
 	  if (arcs[v][u] == 1) {
 		arcNum--;
-	    arcs[v][u] = 0;
-        arcs[u][v] = 0;
+	    arcs[v][u] = Infinity;
+        arcs[u][v] = Infinity;
     }
 
    vexNum--;
@@ -272,10 +278,10 @@ void AdjMatrixUndirGraph<ElemType>::DeleteArc(int v1, int v2)
 	if (v1 == v2)
     throw Error("v1不能等于v2!");// 抛出异常
 
-	if (arcs[v1][v2] != 0)	{	// 原无向图存在边(v1, v2)
+	if (arcs[v1][v2] != Infinity)	{	// 原无向图存在边(v1, v2)
 		arcNum--;
-	    arcs[v1][v2] = 0;
-        arcs[v2][v1] = 0;
+	    arcs[v1][v2] = Infinity;
+        arcs[v2][v1] = Infinity;
     }
 }
 
@@ -306,6 +312,7 @@ AdjMatrixUndirGraph<ElemType>::AdjMatrixUndirGraph(const AdjMatrixUndirGraph<Ele
 	vexNum = g.vexNum;
 	vexMaxNum = g.vexMaxNum;
 	arcNum = g.arcNum;
+	Infinity = g.Infinity;
 
 	vertexes = new ElemType[vexMaxNum];		// 生成顶点数据数组
 	tag = new Status[vexMaxNum];			// 生成标志数组
@@ -335,6 +342,7 @@ AdjMatrixUndirGraph<ElemType> &AdjMatrixUndirGraph<ElemType>::operator =(const A
 	  vexNum = g.vexNum;
     vexMaxNum = g.vexMaxNum;
 	  arcNum = g.arcNum;
+	  Infinity = g.Infinity;
 
 	  vertexes = new ElemType[vexMaxNum];	 // 生成顶点数据数组
 	  tag = new Status[vexMaxNum];			   // 生成标志数组
@@ -364,9 +372,79 @@ void AdjMatrixUndirGraph<ElemType>::Display()
 	for (int v = 0; v < vexNum; v++)	{
 		cout << vertexes[v];
 		for (int u = 0; u < vexNum; u++)
- 			cout << "\t" << arcs[v][u];
+		{
+			if(arcs[v][u]!=Infinity)
+			cout << "\t" << arcs[v][u];
+			else
+			{
+				cout << "\t" << "∞";
+			}
+		}
 		cout << endl;
 	}
 }
+
+
+template <class ElemType>
+void AdjMatrixUndirGraph<ElemType>::ShortestPathDij(int v0, int* path, int* dist)
+  //运用迪杰斯特拉算法求从源点v0到其余各点的最短路径
+{
+	int v, u,MinVal;
+	for (v = 0; v < vexNum; v++)
+	{
+		dist[v] = arcs[v0][v];
+		if (dist[v]==Infinity||dist[v] == 0)   //v0与v之间没有直接路径
+			path[v] = -1;
+		else
+		{
+			path[v] = v0;
+		}
+		tag[v] = UNVISITED;      //初始化所有顶点的tag为UNVISITED
+	}
+	tag[v0] = VISITED;
+	for (int i = 1; i < vexNum; i++)      //找到当前距离的最小值
+	{
+		MinVal = 1000;
+		u = v0;
+		for (v = 0; v < vexNum; v++)
+		{
+			if (GetTag(v) == UNVISITED && dist[v] < MinVal)
+			{
+				u = v;
+				MinVal = dist[v];
+			}
+		}
+		SetTag(u, VISITED);         //将u并入集合U中
+		for (v = FirstAdjVex(u); v != -1; v = NextAdjVex(u, v))
+		{
+			if (GetTag(v) == UNVISITED && dist[v] > MinVal + arcs[u][v])
+			{
+				dist[v] = MinVal + arcs[u][v];
+				path[v] = u;
+			}
+		}
+	}
+}
+
+template<class ElemType>
+void AdjMatrixUndirGraph<ElemType>::DisplayShortAB(const int v1,const int v2)
+{
+	int* path = new int[vexNum];
+	int* dist = new int[vexNum];
+	ShortestPathDij(v1, path, dist);
+	LinkStack<int> ls;
+	ls.Push(v2);
+	for (int i = path[v2]; i != -1; i = path[i])
+		ls.Push(i);
+	int index;
+	ls.Pop(index);
+	cout << vertexes[index];
+	for (ls.Pop(index);!ls.IsEmpty(); ls.Pop(index))
+		cout << " -> " << vertexes[index];
+	cout << " -> " << vertexes[v2];
+}
+
+
+
 
 #endif
