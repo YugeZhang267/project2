@@ -52,6 +52,7 @@ int main(void)
 			        cin>> e1 >> e2;
 			        v1 = g.GetOrder(e1);
 			        v2 = g.GetOrder(e2);
+					g.DisplayShortAB(v1, v2);
 			        break;
        	      }
          }

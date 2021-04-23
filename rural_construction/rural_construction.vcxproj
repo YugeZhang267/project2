@@ -142,7 +142,9 @@
     <ClInclude Include="..\AdjMatrixUndirGraph.h" />
     <ClInclude Include="..\Assistance.h" />
     <ClInclude Include="..\Kruskal.h" />
+    <ClInclude Include="..\LinkStack.h" />
     <ClInclude Include="..\MineHeap.h" />
+    <ClInclude Include="..\Node.h" />
     <ClInclude Include="..\UFSets.h" />
   </ItemGroup>
   <ItemGroup>
