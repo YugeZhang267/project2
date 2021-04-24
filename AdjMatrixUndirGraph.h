@@ -6,6 +6,8 @@
 //#include "Kruskal.h"
 #include "LinkStack.h"
 
+
+
 // 无向图的邻接矩阵类
 template <class ElemType>
 class AdjMatrixUndirGraph
@@ -48,9 +50,22 @@ public:
     void DisplayShortAB(const int v1, const int v2);      //显示A村到B村的最短路径
     void ShortestPathDij(int v0, int* path, int* dist);   //使用迪杰斯特拉算法找到从源点v0到其他各点的最短路径
 //  void All_mintree();
-
+	int Get_tree_value();
 
 };
+
+template <class ElemType>
+int AdjMatrixUndirGraph<ElemType>::Get_tree_value()
+{
+	int c = 0;
+	for (int i = 0; i < vexNum; i++) {
+		for (int j = 0; j < vexNum;j++) {
+			if (GetWeight(i, j) != Infinity)
+				c += GetWeight(i, j);
+		}
+	}
+	return c/2;
+}
 
 template <class ElemType>
 int AdjMatrixUndirGraph<ElemType>::GetWeight(int v1, int v2)
