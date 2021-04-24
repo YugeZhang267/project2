@@ -143,6 +143,7 @@
     <ClInclude Include="..\Assistance.h" />
     <ClInclude Include="..\LinkStack.h" />
     <ClInclude Include="..\Node.h" />
+    <ClInclude Include="ShortestPath_Dij.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\TestAdjMatrixUndirGraph.cpp" />
