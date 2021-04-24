@@ -56,13 +56,13 @@ KruskalEdge<ElemType, WeightType> &KruskalEdge<ElemType, WeightType>::operator =
 
 
 template <class ElemType>
-void MiniSpanTreeKruskal(AdjMatrixUndirGraph<ElemType> &g)
+int MiniSpanTreeKruskal(AdjMatrixUndirGraph<ElemType> &g)
 // 初始条件：存在网g
 // 操作结果：用Kruskal算法构造网g的最小代价生成树
 {
 	int count, VexNum = g.GetVexNum();
-    KruskalEdge<ElemType, char> KEdge;
- 	MinHeap<KruskalEdge<ElemType, char> > ha(g.GetEdgeNum());
+    KruskalEdge<ElemType, int> KEdge;
+ 	MinHeap<KruskalEdge<ElemType, int> > ha(g.GetEdgeNum());
     ElemType  *kVex, v1, v2;
 	kVex = new ElemType[VexNum];	// 定义顶点数组,存储顶点信息 
 	for (int i = 0; i < VexNum; i++)
@@ -79,17 +79,52 @@ void MiniSpanTreeKruskal(AdjMatrixUndirGraph<ElemType> &g)
 				ha.Insert(KEdge);
 			}
 	count = 0;					    // 表示已经挑选的边数
-
+	int cost = 0;
+	int _weight;
 	while (count < VexNum - 1)	{	
         ha.DeleteTop(KEdge);        // 从堆顶取一条边
 		v1 = KEdge.vertex1;
         v2 = KEdge.vertex2;
+		_weight = KEdge.weight;
 		if (f.Differ(v1, v2))	{	// 边所依附的两顶点不在同一棵树上
-			cout << "边:( " << v1 << ", " << v2 << " ) 权:" << KEdge.weight << endl ; // 输出边及权值
+			cout << "边:( " << v1 << ", " << v2 << " ) 权:" << _weight << endl ; // 输出边及权值
+			cost += _weight;
 			f.Union(v1, v2);		// 将两个顶点所在的树合并成一棵树
 			count++;
 		}
+		
 	}
+	cout << "公路总长:" << cost << endl;
+	return cost;
+}
+
+template <class ElemType>
+void DFSTraverse(const AdjMatrixUndirGraph<ElemType> &g, void (*Visit)(const ElemType &))
+// 初始条件：存在图g
+// 操作结果：对无向图g进行深度优先遍历
+{
+	int v;
+	for (v = 0; v < g.GetVexNum(); v++)
+		g.SetTag(v, UNVISITED);// 对每个顶点设置未访问标志
+
+	for (v = 0; v < g.GetVexNum(); v++)
+		
+		if (g.GetTag(v) == UNVISITED)
+			DFS(g, v , Visit);// 从尚未访问的顶点v开始进行深度优先搜索 
+}
+
+template <class ElemType>
+void DFS(const AdjMatrixUndirGraph<ElemType> &g, int v, void (*Visit)(const ElemType &))
+// 初始条件：存在图g
+// 操作结果：从顶点v出发进行深度优先搜索
+{	
+	ElemType e;	
+	g.SetTag(v, VISITED);		// 设置顶点v已访问标志
+	g.GetElem(v, e);			// 取顶点v的数据元素值 
+	Visit(e);					// 访问顶点v
+	for (int w = g.FirstAdjVex(v); w != -1; w = g.NextAdjVex(v, w))
+		if (g.GetTag(w) == UNVISITED)
+			DFS(g, w , Visit);	// 从v的尚未访问过的邻接顶点w开始进行深度优先搜索
 }
 
 #endif
