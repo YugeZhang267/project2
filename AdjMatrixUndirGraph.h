@@ -32,7 +32,7 @@ public:
 	Status GetElem(int v, ElemType &d) const;// 求顶点的元素值
 	Status SetElem(int v, const ElemType &d);// 设置顶点的元素值
 	int GetVexNum() const;					// 返回顶点个数
-	int GetWeight(int v1, int v2);
+	int GetWeight(const int &v1,const int &v2);
 	int GetArcNum() const;					// 返回边数
 	int GetEdgeNum();
 	int FirstAdjVex(int v) const;		// 返回顶点v的第一个邻接点
@@ -51,7 +51,9 @@ public:
     void ShortestPathDij(int v0, int* path, int* dist);   //使用迪杰斯特拉算法找到从源点v0到其他各点的最短路径
 //  void All_mintree();
 	int Get_tree_value();
-
+	void ShortestPathFloyd(const AdjMatrixUndirGraph<ElemType>& g, int** path, int** dist);
+	void DisplayHospitalLocation(const AdjMatrixUndirGraph<ElemType>& g, int** path, int** dist);
+	int GetInfinity()const;
 };
 
 template <class ElemType>
@@ -68,7 +70,7 @@ int AdjMatrixUndirGraph<ElemType>::Get_tree_value()
 }
 
 template <class ElemType>
-int AdjMatrixUndirGraph<ElemType>::GetWeight(int v1, int v2)
+int AdjMatrixUndirGraph<ElemType>::GetWeight(const int &v1,const int &v2)
 {
 	return arcs[v1][v2];
 }
@@ -514,4 +516,101 @@ void AdjMatrixUndirGraph<ElemType>::DisplayShortAB(const int v1, const int v2)
 		cout << " -> " << vertexes[index];
 	cout << " -> " << vertexes[v2];
 }
+
+template<class ElemType>
+int AdjMatrixUndirGraph<ElemType>::GetInfinity()const
+{
+	return Infinity;
+}
+
+template <class ElemType>
+void ShortestPathFloyd( AdjMatrixUndirGraph<ElemType>& g, int** path, int** dist)
+// 操作结果: 用Floyd算法求有向网g中各对顶点u和v之间的最短路径path[u][v]和路径长度
+//	dist[u][v],path[u][v]存储从u到v的最短路径上至此顶点的前一顶点的顶点号,dist[u][v]
+//	存储从u到v的最短路径的长度
+{
+	for (int u = 0; u < g.GetVexNum(); u++)
+		for (int v = 0; v < g.GetVexNum(); v++)
+		{	// 初始化path和dist
+			dist[u][v] = (u != v) ? g.GetWeight(u, v) : 0;
+			if (u != v && dist[u][v] < g.GetInfinity())
+				path[u][v] = u;	// 存在边<u,v>
+			else
+				path[u][v] = -1;											// 不存在边<u,v>
+		}
+
+	for (int k = 0; k < g.GetVexNum(); k++)
+		for (int i = 0; i < g.GetVexNum(); i++)
+			for (int j = 0; j < g.GetVexNum(); j++)
+				if (dist[i][k] != DEFAULT_INFINITY && dist[k][j] != DEFAULT_INFINITY
+					&& dist[i][k] + dist[k][j] < dist[i][j]) {
+					// 从i到k再到j的路径长度更短
+					dist[i][j] = dist[i][k] + dist[k][j];
+					path[i][j] = path[k][j];
+				}
+}
+
+template <class ElemType>
+void DisplayHospitalLocation(const AdjMatrixUndirGraph<ElemType>& g, int** path, int** dist)
+{
+	int sum_of_dist = 0;//存路径总长度
+	int shortest_sum_of_dist = 0;//存最短的路径总长度
+	int temp_location_v = 0;//存暂时确定的医院位置标号
+	ElemType e1, e2;
+	ElemType temp_location_e;//存暂时确定的医院位置
+	for (int v1 = 0; v1 < g.GetVexNum(); v1++)
+	{
+		for (int v2 = 0; v2 < g.GetVexNum(); v2++)
+		{
+			if (v1 != v2)
+			{
+				g.GetElem(v1, e1);
+				g.GetElem(v2, e2);
+				sum_of_dist += dist[v1][v2];
+			}
+		}
+		cout << endl << "若医院建在 " << e1 << "，则所有其他村到医院的路径总长度为: " << sum_of_dist;
+		if (v1 == 0)
+		{
+			shortest_sum_of_dist = sum_of_dist;
+		}
+
+		if (sum_of_dist < shortest_sum_of_dist)
+		{
+			shortest_sum_of_dist = sum_of_dist;
+			temp_location_v = v1;
+		}
+		sum_of_dist = 0;
+	}
+	g.GetElem(temp_location_v, temp_location_e);
+	cout << endl << endl << "综上，当把乡村医院建在 " << temp_location_e << " 时，存在最短的路径总长度为：" << shortest_sum_of_dist;
+	cout << endl << endl << "故建议将乡村医院建在：" << temp_location_e << endl;
+}
 #endif
+
+/*template <class ElemType>
+void ShortestPathFloyd(const AdjMatrixUndirGraph<ElemType>& g, int** path, int** dist)
+// 操作结果: 用Floyd算法求有向网g中各对顶点u和v之间的最短路径path[u][v]和路径长度
+//	dist[u][v],path[u][v]存储从u到v的最短路径上至此顶点的前一顶点的顶点号,dist[u][v]
+//	存储从u到v的最短路径的长度
+{
+	for (int u = 0; u < g.GetVexNum(); u++)
+		for (int v = 0; v < g.GetVexNum(); v++)
+		{	// 初始化path和dist
+			dist[u][v] = (u != v) ? g.GetWeight(u, v) : 0;
+			if (u != v && dist[u][v] < g.GetInfinity())
+				path[u][v] = u;	// 存在边<u,v>
+			else
+				path[u][v] = -1;											// 不存在边<u,v>
+		}
+
+	for (int k = 0; k < g.GetVexNum(); k++)
+		for (int i = 0; i < g.GetVexNum(); i++)
+			for (int j = 0; j < g.GetVexNum(); j++)
+				if (dist[i][k] != DEFAULT_INFINITY && dist[k][j] != DEFAULT_INFINITY
+					&& dist[i][k] + dist[k][j] < dist[i][j]) {
+					// 从i到k再到j的路径长度更短
+					dist[i][j] = dist[i][k] + dist[k][j];
+					path[i][j] = path[k][j];
+				}
+}*/

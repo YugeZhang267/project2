@@ -2,7 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include "Kruskal.h"
-
+#include "Assistance.h"
 int jc(int n) {
 	int count=n;
 	for (int i = n-1; i > 1; i--) {
@@ -17,7 +17,7 @@ int main(void)
     try									// 用try封装可能出现异常的代码
 	{
 		int N,M;
-		ifstream file("test2.txt",ios::in);
+		ifstream file("test5.txt",ios::in);
 		int count_=0;
 		if(!file)
         {
@@ -144,8 +144,25 @@ int main(void)
 //					MiniSpanTreeKruskal(g_2);
 
 				    break;
-			    case '2':
-				    break;
+				case '2':
+					int** distt, ** pathh;
+					// 分配存储空间
+					distt = new int* [g.GetVexNum()], pathh = new int* [g.GetVexNum()];
+					for (int i = 0; i < g.GetVexNum(); i++) {
+						distt[i] = new int[g.GetVexNum()];
+						pathh[i] = new int[g.GetVexNum()];
+					}
+					ShortestPathFloyd(g, pathh, distt);	// 用Floyd算法求最短路径
+					DisplayHospitalLocation(g, pathh, distt);// 显示最短路径 
+					cout << endl;
+
+					// 释放存储空间
+					for (int j = 0; j < g.GetVexNum(); j++) {
+						delete[]distt[j];
+						delete[]pathh[j];
+					}
+					delete[]distt; delete[]pathh;
+					break;
 			    case '3':
 			        cout << endl << "输入查询乡村A和B";
 			        cin>> e1 >> e2;
