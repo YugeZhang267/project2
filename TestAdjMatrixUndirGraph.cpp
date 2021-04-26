@@ -1,4 +1,5 @@
 #include "AdjMatrixUndirGraph.h"		// 邻接矩阵无向图
+#include "ShortestPath_Dij.h"
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -45,11 +46,11 @@ int main(void)
 			    case '2':
 				    break;*/
 			    case '3':
-			        cout << endl << "输入查询乡村A和B";
+			        cout << endl << "输入查询乡村A和B  ";
 			        cin>> e1 >> e2;
 			        v1 = g.GetOrder(e1);
 			        v2 = g.GetOrder(e2);
-					g.DisplayShortAB(v1, v2);
+					DisplayShortAB(v1, v2,g);
 			        break;
        	      }
          }

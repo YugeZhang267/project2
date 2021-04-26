@@ -1,7 +1,4 @@
 ﻿  TestAdjMatrixUndirGraph.cpp
-C:\Users\刘斐然\Documents\GitHub\project2\AdjMatrixUndirGraph.h(388,37): error C2039: "ShortestPathDij": 不是 "AdjMatrixUndirGraph<ElemType>" 的成员
-C:\Users\刘斐然\Documents\GitHub\project2\AdjMatrixUndirGraph.h(390,1): error C2447: “{”: 缺少函数标题(是否是老式的形式表?)
-C:\Users\刘斐然\Documents\GitHub\project2\AdjMatrixUndirGraph.h(429,37): error C2039: "DisplayShortAB": 不是 "AdjMatrixUndirGraph<ElemType>" 的成员
-C:\Users\刘斐然\Documents\GitHub\project2\AdjMatrixUndirGraph.h(430,1): error C2447: “{”: 缺少函数标题(是否是老式的形式表?)
-C:\Users\刘斐然\Documents\GitHub\project2\TestAdjMatrixUndirGraph.cpp(52,8): error C2039: "DisplayShortAB": 不是 "AdjMatrixUndirGraph<char>" 的成员
-C:\Users\刘斐然\Documents\GitHub\project2\TestAdjMatrixUndirGraph.cpp(20): message : 参见“AdjMatrixUndirGraph<char>”的声明
+C:\Users\刘斐然\Documents\GitHub\project2\TestAdjMatrixUndirGraph.cpp(23,7): warning C4101: “v”: 未引用的局部变量
+C:\Users\刘斐然\Documents\GitHub\project2\TestAdjMatrixUndirGraph.cpp(22,17): warning C4101: “e”: 未引用的局部变量
+  rural_construction.vcxproj -> C:\Users\刘斐然\Documents\GitHub\project2\x64\Debug\rural_construction.exe

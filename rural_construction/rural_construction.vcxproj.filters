@@ -27,7 +27,7 @@
     <ClInclude Include="..\Node.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ShortestPath_Dij.h">
+    <ClInclude Include="..\ShortestPath_Dij.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
