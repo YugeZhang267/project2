@@ -3,6 +3,7 @@
 #include <fstream>
 #include "Kruskal.h"
 #include "Assistance.h"
+#include "ShortestPath_Dij.h"
 int jc(int n) {
 	int count=n;
 	for (int i = n-1; i > 1; i--) {
@@ -168,7 +169,7 @@ int main(void)
 			        cin>> e1 >> e2;
 			        v1 = g.GetOrder(e1);
 			        v2 = g.GetOrder(e2);
-					g.DisplayShortAB(v1, v2);
+					DisplayShortAB(v1, v2,g);
 			        break;
        	      }
          }

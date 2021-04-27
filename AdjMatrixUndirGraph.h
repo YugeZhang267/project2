@@ -47,8 +47,8 @@ public:
 	AdjMatrixUndirGraph<ElemType> &operator =(const AdjMatrixUndirGraph<ElemType> &g);
 		// 赋值语句重载
     void Display();	                         // 显示邻接矩阵无向图
-    void DisplayShortAB(const int v1, const int v2);      //显示A村到B村的最短路径
-    void ShortestPathDij(int v0, int* path, int* dist);   //使用迪杰斯特拉算法找到从源点v0到其他各点的最短路径
+    //void DisplayShortAB(const int v1, const int v2);      //显示A村到B村的最短路径
+    //void ShortestPathDij(int v0, int* path, int* dist);   //使用迪杰斯特拉算法找到从源点v0到其他各点的最短路径
 //  void All_mintree();
 	int Get_tree_value();
 	void ShortestPathFloyd(const AdjMatrixUndirGraph<ElemType>& g, int** path, int** dist);
@@ -458,6 +458,7 @@ void AdjMatrixUndirGraph<ElemType>::Display()
 	}
 }
 
+/*
 template <class ElemType>
 void AdjMatrixUndirGraph<ElemType>::ShortestPathDij(int v0, int* path, int* dist)
 //运用迪杰斯特拉算法求从源点v0到其余各点的最短路径
@@ -516,6 +517,7 @@ void AdjMatrixUndirGraph<ElemType>::DisplayShortAB(const int v1, const int v2)
 		cout << " -> " << vertexes[index];
 	cout << " -> " << vertexes[v2];
 }
+*/
 
 template<class ElemType>
 int AdjMatrixUndirGraph<ElemType>::GetInfinity()const
