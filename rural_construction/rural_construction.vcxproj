@@ -145,6 +145,7 @@
     <ClInclude Include="..\LinkStack.h" />
     <ClInclude Include="..\MineHeap.h" />
     <ClInclude Include="..\Node.h" />
+    <ClInclude Include="..\ShortestPath_Dij.h" />
     <ClInclude Include="..\UFSets.h" />
   </ItemGroup>
   <ItemGroup>
