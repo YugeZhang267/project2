@@ -21,13 +21,19 @@
     <ClInclude Include="..\Assistance.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\Kruskal.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MineHeap.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UFSets.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
     <ClInclude Include="..\LinkStack.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\Node.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ShortestPath_Dij.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
