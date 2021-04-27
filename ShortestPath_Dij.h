@@ -7,7 +7,7 @@
 #include "LinkStack.h"
 
 template<class ElemType>
-void DisplayShortAB(const int v1, const int v2,AdjMatrixUndirGraph<ElemType> &g)
+void DisplayShortAB(const int v1, const int v2,const AdjMatrixUndirGraph<ElemType> &g)
 //显示A村到B村的最短路径
 {
 	int* path = new int[g.GetVexNum()];
@@ -34,7 +34,7 @@ void DisplayShortAB(const int v1, const int v2,AdjMatrixUndirGraph<ElemType> &g)
 
 
 template<class ElemType>
-void ShortestPathDij(int v0, int* path, int* dist,AdjMatrixUndirGraph<ElemType>& g)
+void ShortestPathDij(int v0, int* path, int* dist, const AdjMatrixUndirGraph<ElemType>& g)
 //使用迪杰斯特拉算法找到从源点v0到其他各点的最短路径
 {
 	int v, u, MinVal;
