@@ -1,14 +1,9 @@
 #ifndef __ADJ_MATRIX_UNDIR_GRAPH_H__
 #define __ADJ_MATRIX_UNDIR_GRAPH_H__
 #include "Assistance.h"					// 辅助软件包
-#include "MineHeap.h"
-#include "UFSets.h"
-//#include "Kruskal.h"
 #include "LinkStack.h"
 
-
-
-// 无向图的邻接矩阵类
+// 有向图的邻接矩阵类
 template <class ElemType>
 class AdjMatrixUndirGraph
 {
@@ -18,12 +13,13 @@ protected:
 	int **arcs;							    // 存放边信息邻接矩阵
 	ElemType *vertexes;						// 存放顶点信息的数组
 	mutable Status *tag;					// 标志数组
-	int Infinity;                           // 无穷大量
+	int Infinity;                            //无穷大量
+
 public:
 // 邻接矩阵类型的方法声明:
-	AdjMatrixUndirGraph(ElemType es[], int vertexNum, int vertexMaxNum = DEFAULT_SIZE, int infin = DEFAULT_INFINITY);
+	AdjMatrixUndirGraph(ElemType es[], int vertexNum, int vertexMaxNum = DEFAULT_SIZE,int infin=DEFAULT_INFINITY);
 		// 以数组es[]为顶点,顶点个数为vertexNum,允许的顶点最大数目为vertexMaxNum,边数为0的无向图
-	AdjMatrixUndirGraph(int vertexMaxNum = DEFAULT_SIZE, int infin = DEFAULT_INFINITY);
+	AdjMatrixUndirGraph(int vertexMaxNum = DEFAULT_SIZE,int infin=DEFAULT_INFINITY);
 		// 构造允许的顶点最大数目为vertexMaxNum,边数为0的无向图
 	~AdjMatrixUndirGraph();					// 析构函数
 	void Clear();			              // 清空图
@@ -32,9 +28,7 @@ public:
 	Status GetElem(int v, ElemType &d) const;// 求顶点的元素值
 	Status SetElem(int v, const ElemType &d);// 设置顶点的元素值
 	int GetVexNum() const;					// 返回顶点个数
-	int GetWeight(const int &v1,const int &v2);
 	int GetArcNum() const;					// 返回边数
-	int GetEdgeNum();
 	int FirstAdjVex(int v) const;		// 返回顶点v的第一个邻接点
 	int NextAdjVex(int v1, int v2) const;		 // 返回顶点v1的相对于v2的下一个邻接点
 	void InsertVex(const ElemType &d);			 // 插入元素值为d的顶点
@@ -46,79 +40,14 @@ public:
 	AdjMatrixUndirGraph(const AdjMatrixUndirGraph<ElemType> &g);	// 复制构造函数
 	AdjMatrixUndirGraph<ElemType> &operator =(const AdjMatrixUndirGraph<ElemType> &g);
 		// 赋值语句重载
-    void Display();	                         // 显示邻接矩阵无向图
-    void DisplayShortAB(const int v1, const int v2);      //显示A村到B村的最短路径
-    void ShortestPathDij(int v0, int* path, int* dist);   //使用迪杰斯特拉算法找到从源点v0到其他各点的最短路径
-//  void All_mintree();
-	int Get_tree_value();
-	void ShortestPathFloyd(const AdjMatrixUndirGraph<ElemType>& g, int** path, int** dist);
-	void DisplayHospitalLocation(const AdjMatrixUndirGraph<ElemType>& g, int** path, int** dist);
-	int GetInfinity()const;
+  void Display();	                         // 显示邻接矩阵无向图
+  int GetWeight(const int& v1, const int& v2)const;    //返回顶点v1到v2的有向边的权值  
+  int GetInfinity()const;
 };
 
-template <class ElemType>
-int AdjMatrixUndirGraph<ElemType>::Get_tree_value()
-{
-	int c = 0;
-	for (int i = 0; i < vexNum; i++) {
-		for (int j = 0; j < vexNum;j++) {
-			if (GetWeight(i, j) != Infinity)
-				c += GetWeight(i, j);
-		}
-	}
-	return c/2;
-}
-
-template <class ElemType>
-int AdjMatrixUndirGraph<ElemType>::GetWeight(const int &v1,const int &v2)
-{
-	return arcs[v1][v2];
-}
-
-template <class ElemType>
-int AdjMatrixUndirGraph<ElemType>::GetEdgeNum()
-{
-	return arcNum;
-}
-/*
-template <class ElemType>
-void AdjMatrixUndirGraph<ElemType>::All_mintree()
-{
-	int count, VexNum = GetVexNum();
-	KruskalEdge<ElemType, char> KEdge;
-	MinHeap<KruskalEdge<ElemType, char> > ha(g.GetEdgeNum());
-	ElemType* kVex, v1, v2;
-	kVex = new ElemType[VexNum];	// 定义顶点数组,存储顶点信息 
-	for (int i = 0; i < VexNum; i++)
-		g.GetElem(i, kVex[i]);
-	UFSets<ElemType> f(kVex, VexNum);// 根据顶点数组构造并查集 
-	for (int v = 0; v < g.GetVexNum(); v++)
-		for (int u = g.FirstAdjVex(v); u >= 0; u = g.NextAdjVex(v, u))
-			if (v < u) {	// 将v < u的边插入到最小堆 
-				g.GetElem(v, v1);
-				g.GetElem(u, v2);
-				KEdge.vertex1 = v1;
-				KEdge.vertex2 = v2;
-				KEdge.weight = g.GetWeight(v, u);
-				ha.Insert(KEdge);
-			}
-	count = 0;					    // 表示已经挑选的边数
-
-	while (count < VexNum - 1) {
-		ha.DeleteTop(KEdge);        // 从堆顶取一条边
-		v1 = KEdge.vertex1;
-		v2 = KEdge.vertex2;
-		if (f.Differ(v1, v2)) {	// 边所依附的两顶点不在同一棵树上
-			cout << "边:( " << v1 << ", " << v2 << " ) 权:" << KEdge.weight << endl; // 输出边及权值
-			f.Union(v1, v2);		// 将两个顶点所在的树合并成一棵树
-			count++;
-		}
-	}
-}
-*/
 // 无向图的邻接矩阵类的实现部分
 template <class ElemType>
-AdjMatrixUndirGraph<ElemType>::AdjMatrixUndirGraph(ElemType es[], int vertexNum, int vertexMaxNum, int infin)
+AdjMatrixUndirGraph<ElemType>::AdjMatrixUndirGraph(ElemType es[], int vertexNum, int vertexMaxNum,int infin)
 // 操作结果：构造数据元素为es[],顶点个数为vertexNum,允许的顶点最大数目为vertexMaxNum,边数为0的无向图
 
 {
@@ -143,15 +72,12 @@ AdjMatrixUndirGraph<ElemType>::AdjMatrixUndirGraph(ElemType es[], int vertexNum,
 		vertexes[v] = es[v];
 		tag[v] = UNVISITED;
 		for (int u = 0; u < vexNum; u++)
-		{
-			if (u == v) arcs[v][u] = 0;
-			else arcs[v][u] = Infinity;
-		}
+			arcs[v][u] = Infinity;
 	}
 }
 
 template <class ElemType>
-AdjMatrixUndirGraph<ElemType>::AdjMatrixUndirGraph(int vertexMaxNum, int infin)
+AdjMatrixUndirGraph<ElemType>::AdjMatrixUndirGraph(int vertexMaxNum,int infin)
 // 操作结果：构造允许顶点的最大数目为vertexMaxNum的空无向图
 {
 	if (vertexMaxNum < 0)
@@ -254,7 +180,7 @@ int AdjMatrixUndirGraph<ElemType>::FirstAdjVex(int v) const
        throw Error("v不合法!");// 抛出异常
 
 	for (int u = 0; u < vexNum; u++)
-		if (arcs[v][u] != 0 && arcs[v][u] != Infinity)
+		if (arcs[v][u] != 0&&arcs[v][u]!=Infinity)
        return u;
 
 	return -1;					// 返回-1表示无邻接点
@@ -272,7 +198,7 @@ int AdjMatrixUndirGraph<ElemType>::NextAdjVex(int v1, int v2) const
        Error("v1不能等于v2!");		// 抛出异常
 
 	for (int u = v2 + 1; u < vexNum; u++)
-		if (arcs[v1][u] != 0 && arcs[v1][u] != Infinity)
+		if (arcs[v1][u] != 0&&arcs[v1][u]!=Infinity)
        return u;
 
 	return -1;						// 返回-1表示无下一个邻接点
@@ -324,7 +250,7 @@ void AdjMatrixUndirGraph<ElemType>::DeleteVex(const ElemType &d)
       throw Error("图中不存在要删除的顶点!");	// 抛出异常
 
    for (int u = 0; u < vexNum; u++)             // 删除与顶点d相关联的边
-	  if (arcs[v][u] != 0) {
+	  if (arcs[v][u] == 1) {
 		arcNum--;
 	    arcs[v][u] = Infinity;
         arcs[u][v] = Infinity;
@@ -447,7 +373,7 @@ void AdjMatrixUndirGraph<ElemType>::Display()
 		cout << vertexes[v];
 		for (int u = 0; u < vexNum; u++)
 		{
-			if (arcs[v][u] != Infinity)
+			if(arcs[v][u]!=Infinity)
 			cout << "\t" << arcs[v][u];
 			else
 			{
@@ -458,15 +384,31 @@ void AdjMatrixUndirGraph<ElemType>::Display()
 	}
 }
 
+
+template<class ElemType>
+int AdjMatrixUndirGraph<ElemType>::GetWeight(const int& v1, const int& v2)const
+{
+	return arcs[v1][v2];
+}
+
+template<class ElemType>
+int AdjMatrixUndirGraph<ElemType>::GetInfinity()const
+{
+	return Infinity;
+}
+
+
+
+/*
 template <class ElemType>
 void AdjMatrixUndirGraph<ElemType>::ShortestPathDij(int v0, int* path, int* dist)
-//运用迪杰斯特拉算法求从源点v0到其余各点的最短路径
+  //运用迪杰斯特拉算法求从源点v0到其余各点的最短路径
 {
-	int v, u, MinVal;
+	int v, u,MinVal;
 	for (v = 0; v < vexNum; v++)
 	{
 		dist[v] = arcs[v0][v];
-		if (dist[v] == Infinity || dist[v] == 0)   //v0与v之间没有直接路径
+		if (dist[v]==Infinity||dist[v] == 0)   //v0与v之间没有直接路径
 			path[v] = -1;
 		else
 		{
@@ -500,7 +442,7 @@ void AdjMatrixUndirGraph<ElemType>::ShortestPathDij(int v0, int* path, int* dist
 }
 
 template<class ElemType>
-void AdjMatrixUndirGraph<ElemType>::DisplayShortAB(const int v1, const int v2)
+void AdjMatrixUndirGraph<ElemType>::DisplayShortAB(const int v1,const int v2)
 {
 	int* path = new int[vexNum];
 	int* dist = new int[vexNum];
@@ -517,100 +459,7 @@ void AdjMatrixUndirGraph<ElemType>::DisplayShortAB(const int v1, const int v2)
 	cout << " -> " << vertexes[v2];
 }
 
-template<class ElemType>
-int AdjMatrixUndirGraph<ElemType>::GetInfinity()const
-{
-	return Infinity;
-}
+*/
 
-template <class ElemType>
-void ShortestPathFloyd( AdjMatrixUndirGraph<ElemType>& g, int** path, int** dist)
-// 操作结果: 用Floyd算法求有向网g中各对顶点u和v之间的最短路径path[u][v]和路径长度
-//	dist[u][v],path[u][v]存储从u到v的最短路径上至此顶点的前一顶点的顶点号,dist[u][v]
-//	存储从u到v的最短路径的长度
-{
-	for (int u = 0; u < g.GetVexNum(); u++)
-		for (int v = 0; v < g.GetVexNum(); v++)
-		{	// 初始化path和dist
-			dist[u][v] = (u != v) ? g.GetWeight(u, v) : 0;
-			if (u != v && dist[u][v] < g.GetInfinity())
-				path[u][v] = u;	// 存在边<u,v>
-			else
-				path[u][v] = -1;											// 不存在边<u,v>
-		}
 
-	for (int k = 0; k < g.GetVexNum(); k++)
-		for (int i = 0; i < g.GetVexNum(); i++)
-			for (int j = 0; j < g.GetVexNum(); j++)
-				if (dist[i][k] != DEFAULT_INFINITY && dist[k][j] != DEFAULT_INFINITY
-					&& dist[i][k] + dist[k][j] < dist[i][j]) {
-					// 从i到k再到j的路径长度更短
-					dist[i][j] = dist[i][k] + dist[k][j];
-					path[i][j] = path[k][j];
-				}
-}
-
-template <class ElemType>
-void DisplayHospitalLocation(const AdjMatrixUndirGraph<ElemType>& g, int** path, int** dist)
-{
-	int sum_of_dist = 0;//存路径总长度
-	int shortest_sum_of_dist = 0;//存最短的路径总长度
-	int temp_location_v = 0;//存暂时确定的医院位置标号
-	ElemType e1, e2;
-	ElemType temp_location_e;//存暂时确定的医院位置
-	for (int v1 = 0; v1 < g.GetVexNum(); v1++)
-	{
-		for (int v2 = 0; v2 < g.GetVexNum(); v2++)
-		{
-			if (v1 != v2)
-			{
-				g.GetElem(v1, e1);
-				g.GetElem(v2, e2);
-				sum_of_dist += dist[v1][v2];
-			}
-		}
-		cout << endl << "若医院建在 " << e1 << "，则所有其他村到医院的路径总长度为: " << sum_of_dist;
-		if (v1 == 0)
-		{
-			shortest_sum_of_dist = sum_of_dist;
-		}
-
-		if (sum_of_dist < shortest_sum_of_dist)
-		{
-			shortest_sum_of_dist = sum_of_dist;
-			temp_location_v = v1;
-		}
-		sum_of_dist = 0;
-	}
-	g.GetElem(temp_location_v, temp_location_e);
-	cout << endl << endl << "综上，当把乡村医院建在 " << temp_location_e << " 时，存在最短的路径总长度为：" << shortest_sum_of_dist;
-	cout << endl << endl << "故建议将乡村医院建在：" << temp_location_e << endl;
-}
 #endif
-
-/*template <class ElemType>
-void ShortestPathFloyd(const AdjMatrixUndirGraph<ElemType>& g, int** path, int** dist)
-// 操作结果: 用Floyd算法求有向网g中各对顶点u和v之间的最短路径path[u][v]和路径长度
-//	dist[u][v],path[u][v]存储从u到v的最短路径上至此顶点的前一顶点的顶点号,dist[u][v]
-//	存储从u到v的最短路径的长度
-{
-	for (int u = 0; u < g.GetVexNum(); u++)
-		for (int v = 0; v < g.GetVexNum(); v++)
-		{	// 初始化path和dist
-			dist[u][v] = (u != v) ? g.GetWeight(u, v) : 0;
-			if (u != v && dist[u][v] < g.GetInfinity())
-				path[u][v] = u;	// 存在边<u,v>
-			else
-				path[u][v] = -1;											// 不存在边<u,v>
-		}
-
-	for (int k = 0; k < g.GetVexNum(); k++)
-		for (int i = 0; i < g.GetVexNum(); i++)
-			for (int j = 0; j < g.GetVexNum(); j++)
-				if (dist[i][k] != DEFAULT_INFINITY && dist[k][j] != DEFAULT_INFINITY
-					&& dist[i][k] + dist[k][j] < dist[i][j]) {
-					// 从i到k再到j的路径长度更短
-					dist[i][j] = dist[i][k] + dist[k][j];
-					path[i][j] = path[k][j];
-				}
-}*/

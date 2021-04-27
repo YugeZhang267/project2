@@ -141,11 +141,9 @@
   <ItemGroup>
     <ClInclude Include="..\AdjMatrixUndirGraph.h" />
     <ClInclude Include="..\Assistance.h" />
-    <ClInclude Include="..\Kruskal.h" />
     <ClInclude Include="..\LinkStack.h" />
-    <ClInclude Include="..\MineHeap.h" />
     <ClInclude Include="..\Node.h" />
-    <ClInclude Include="..\UFSets.h" />
+    <ClInclude Include="..\ShortestPath_Dij.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\TestAdjMatrixUndirGraph.cpp" />
