@@ -41,6 +41,9 @@ void Display(ElemType elem[], int n);	// 显示数组elem的各数据元素值
 template <class ElemType>
 void Write(const ElemType &e);			// 显示数据元素
 
+template <class ElemType>
+void Write1(const ElemType& e);			// 显示数据元素
+
 // 辅助类
 class Error;			// 通用异常类
 
@@ -112,6 +115,13 @@ void Write(const ElemType &e)
 // 操作结果: 显示数据元素
 {
     cout << e << "  ";
+}
+
+template <class ElemType>
+void Write1(const ElemType& e)
+// 操作结果: 显示数据元素
+{
+//	cout << e << "  ";
 }
 
 #endif

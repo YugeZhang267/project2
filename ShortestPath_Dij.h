@@ -13,23 +13,33 @@ void DisplayShortAB(const int v1, const int v2, AdjMatrixUndirGraph<ElemType> &g
 	int* path = new int[g.GetVexNum()];
 	int* dist = new int[g.GetVexNum()];
 	ShortestPathDij(v1, path, dist,g);
-	LinkStack<int> ls;
-	ls.Push(v2);
-	for (int i = path[v2]; i != -1; i = path[i])
-		ls.Push(i);
-	int index;
-	ls.Pop(index);
-	ElemType e;
-	g.GetElem(index,e);
-	cout << e;
-	for (ls.Pop(index); !ls.IsEmpty(); ls.Pop(index))
+	if (dist[v2] == g.GetInfinity())
 	{
-		g.GetElem(index, e);
-		cout << " -> " << e;
+		ElemType e1, e2;
+		g.GetElem(v1, e1);
+		g.GetElem(v2, e2);
+		cout << e1 << "与" << e2 << "不连通!" << endl;
 	}
-	g.GetElem(v2, e);
-	cout << " -> " << e;
-	cout << "   最短路径长度为：" << dist[v2] << endl;
+	else
+	{
+		LinkStack<int> ls;
+		ls.Push(v2);
+		for (int i = path[v2]; i != -1; i = path[i])
+			ls.Push(i);
+		int index;
+		ls.Pop(index);
+		ElemType e;
+		g.GetElem(index, e);
+		cout << e;
+		for (ls.Pop(index); !ls.IsEmpty(); ls.Pop(index))
+		{
+			g.GetElem(index, e);
+			cout << " -> " << e;
+		}
+		g.GetElem(v2, e);
+		cout << " -> " << e;
+		cout << "   最短路径长度为：" << dist[v2] << endl;
+	}
 }
 
 

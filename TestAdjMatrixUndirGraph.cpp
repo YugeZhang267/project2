@@ -18,8 +18,8 @@ int main(void)
 	try									// 用try封装可能出现异常的代码
 	{
 		int N, M;
-		ifstream file("test3.txt", ios::in);
-		int count_ = 0;
+		ifstream file("test6.txt", ios::in);
+		int count_ = 0;int flag_1 = 0;
 		if (!file)
 		{
 			cout << "打开文件失败";
@@ -31,6 +31,7 @@ int main(void)
 		file >> M;
 		AdjMatrixUndirGraph<char> g(vexs, N, 10);
 		AdjMatrixUndirGraph<char> g_1(vexs, N, 10), g_2(vexs, N, 10);
+		AdjMatrixUndirGraph<char> g_3(vexs, N, 10);
 		KruskalEdge<char, int>* e_all;//所有边数组
 		int* a;
 		a = new int[M];
@@ -43,9 +44,13 @@ int main(void)
 			else
 				a[i] = 0;
 		}
+		
+		//DFSTraverse<char>(g, Write<char>);
 
-		DFSTraverse<char>(g, Write<char>);
-
+		for (int i = 0; i < N; i++)
+		{
+			cout << vexs[i] << " ";
+		}
 		cout << endl << "=================" << endl;
 		char c = '0', e, e1, e2;
 		int v, v1, v2, w; //w表示权重，即公路长度
@@ -61,6 +66,7 @@ int main(void)
 			v2 = g.GetOrder(e2);
 			g.InsertArc(v1, v2, w);
 		}
+		g_3 = g;
 		for (int i = 0; i < M; i++) {
 			cout << e_all[i].vertex1 << " " << e_all[i].vertex2 << " " << e_all[i].weight << endl;
 		}
@@ -77,7 +83,21 @@ int main(void)
 			cin >> c;
 			switch (c) {
 			case '1':
-				cost = MiniSpanTreeKruskal(g);
+				DFS(g_3, 0,Write1);
+				for (int i = 0; i < g_3.GetVexNum(); i++) {
+					if (g_3.GetTag(i) == UNVISITED) {
+						flag_1 = 1;
+						cout << flag_1 << endl;
+					}
+				}
+				if (flag_1 == 1) {
+					cout << "不存在连通所有乡村的通路" << endl;
+					break;
+				}
+				else
+				{
+
+					cost = MiniSpanTreeKruskal(g);
 				cout << "**********************" << endl;
 				//					g_2 = g;
 
@@ -96,7 +116,7 @@ int main(void)
 					}
 					cout << endl;
 
-					DFS(g_2, 0, Write<char>);
+					DFS(g_2, 0, Write1<char>);
 					cout << endl << "=================" << endl;
 					int c0 = 0;
 					int c1 = 0;
@@ -145,7 +165,9 @@ int main(void)
 				//					MiniSpanTreeKruskal(g_2);
 
 				break;
+			}
 			case '2':
+				
 				int** distt, ** pathh;
 				// 分配存储空间
 				distt = new int* [g.GetVexNum()], pathh = new int* [g.GetVexNum()];
@@ -169,6 +191,13 @@ int main(void)
 				cin >> e1 >> e2;
 				v1 = g.GetOrder(e1);
 				v2 = g.GetOrder(e2);
+				if (v1<0 || v1>g.GetVexNum())
+					cout << "v1不合法!" << endl;
+				else if (v2<0 || v2>g.GetVexNum())
+					cout<<"v2不合法!"<<endl;
+				else if (v1 == v2)
+					cout<<"v1不能等于v2!"<<endl;
+				else
 				DisplayShortAB(v1, v2,g);
 				break;
 			}
